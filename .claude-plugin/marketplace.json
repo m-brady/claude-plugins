@@ -1,0 +1,25 @@
+{
+  "name": "m-brady/claude-plugins",
+  "description": "A marketplace for Claude Code plugins, containing Skills, commands, agents, hooks, and MCP servers",
+  "owner": {
+    "name": "Michael Brady",
+    "github": "m-brady"
+  },
+  "plugins": [
+    {
+      "name": "sqlc-go",
+      "source": "./plugins/sqlc-go-plugin",
+      "description": "Expert guidance for using sqlc with Go and PostgreSQL, including query writing, type mappings, and migration management"
+    },
+    {
+      "name": "example-plugin",
+      "source": "./plugins/example-plugin",
+      "description": "Example plugin demonstrating the structure and components of a Claude Code plugin"
+    },
+    {
+      "name": "cloudflare-workers",
+      "source": "./plugins/cloudflare-workers-plugin",
+      "description": "Skill for developing and deploying Cloudflare Workers"
+    }
+  ]
+}

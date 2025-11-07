@@ -1,5 +1,5 @@
 {
-  "name": "m-brady/claude-plugins",
+  "name": "claude-plugins",
   "description": "A marketplace for Claude Code plugins, containing Skills, commands, agents, hooks, and MCP servers",
   "owner": {
     "name": "Michael Brady",

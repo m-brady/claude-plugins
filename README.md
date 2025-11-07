@@ -43,7 +43,7 @@ Once the marketplace is added, install plugins:
 /plugin
 
 # Install a specific plugin directly
-/plugin install sqlc-go@claude-plugins
+/plugin install sqlc-go@m-brady/claude-plugins
 
 # Check installed plugins
 /plugin list
@@ -68,17 +68,17 @@ Once the marketplace is added, install plugins:
 
 ```shell
 # Enable/disable plugins
-/plugin enable sqlc-go@claude-plugins
-/plugin disable sqlc-go@claude-plugins
+/plugin enable sqlc-go@m-brady/claude-plugins
+/plugin disable sqlc-go@m-brady/claude-plugins
 
 # Uninstall a plugin
-/plugin uninstall sqlc-go@claude-plugins
+/plugin uninstall sqlc-go@m-brady/claude-plugins
 
 # Update marketplace plugin list
-/plugin marketplace update claude-plugins
+/plugin marketplace update m-brady/claude-plugins
 
 # Remove marketplace and all its plugins
-/plugin marketplace remove claude-plugins
+/plugin marketplace remove m-brady/claude-plugins
 ```
 
 ### For Team Use
@@ -95,7 +95,7 @@ To automatically install this marketplace for your team, add to your project's `
   "enabledPlugins": [
     {
       "name": "sqlc-go",
-      "marketplace": "claude-plugins"
+      "marketplace": "m-brady/claude-plugins"
     }
   ]
 }
@@ -124,7 +124,7 @@ Expert guidance for using sqlc with Go and PostgreSQL, including query writing, 
 
 **Installation:**
 ```shell
-/plugin install sqlc-go@claude-plugins
+/plugin install sqlc-go@m-brady/claude-plugins
 ```
 
 **Usage:**
@@ -145,7 +145,7 @@ An example plugin demonstrating the structure and components of a Claude Code pl
 
 **Installation:**
 ```shell
-/plugin install example-plugin@claude-plugins
+/plugin install example-plugin@m-brady/claude-plugins
 ```
 
 ## Creating Your Own Plugins
@@ -207,7 +207,7 @@ your-plugin/
 5. Test locally:
    ```shell
    /plugin marketplace add ./path/to/claude-plugins
-   /plugin install your-plugin@claude-plugins
+   /plugin install your-plugin@m-brady/claude-plugins
    ```
 
 ## Marketplace Structure

@@ -1,0 +1,8 @@
+{
+  "name": "cloudflare-workers",
+  "description": "Official Cloudflare Workers skill for building serverless applications with Workers, KV, Durable Objects, D1, R2, and more",
+  "version": "1.0.0",
+  "author": {
+    "name": "Cloudflare"
+  }
+}

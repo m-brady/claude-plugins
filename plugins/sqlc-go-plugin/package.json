@@ -1,0 +1,23 @@
+{
+  "name": "sqlc-go",
+  "version": "1.0.0",
+  "description": "Expert guidance for using sqlc with Go and PostgreSQL, including query writing, type mappings, and migration management",
+  "main": "skill.md",
+  "skills": {
+    "sqlc-go": {
+      "description": "Expert at sqlc with Go and PostgreSQL: configuration, query writing, type overrides, JSONB handling, and golang-migrate integration"
+    }
+  },
+  "keywords": [
+    "sqlc",
+    "go",
+    "golang",
+    "postgresql",
+    "postgres",
+    "database",
+    "sql",
+    "migrations",
+    "golang-migrate",
+    "code-generation"
+  ]
+}

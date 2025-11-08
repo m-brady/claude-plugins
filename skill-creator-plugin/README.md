@@ -1,10 +1,10 @@
 # Skill Creator Plugin
 
-A Claude Code plugin that helps you create well-structured skills with proper formatting, validation, and best practices.
+A Claude Code plugin that helps you create and edit skills using Test-Driven Development principles.
 
 ## What is this?
 
-This plugin provides a skill that guides you through creating new Claude Code skills. It helps ensure your skills follow best practices, have proper YAML frontmatter, and include all necessary components.
+This plugin provides a skill that guides you through creating new skills or editing existing ones using a TDD approach. It teaches you to run baseline tests first, identify failures, then write minimal skills that address those specific failures. This ensures your skills teach the right thing based on observed behavior, not assumptions.
 
 ## Installation
 
@@ -27,44 +27,61 @@ claude plugin install skill-creator
 
 ### Skills
 
-- **skill-creator**: Helps you create new Claude Code skills with proper structure and validation
+- **skill-creator**: Guides you through creating or editing skills using Test-Driven Development
+  - RED: Run baseline tests to identify failures
+  - GREEN: Write minimal skill addressing those failures
+  - REFACTOR: Test and close loopholes through iteration
 
 ### Templates
 
-- `basic-skill-template.md`: Template for a standard skill
-- `readonly-skill-template.md`: Template for read-only skills with tool restrictions
+- `basic-skill-template.md`: Template for standard skills with Anti-Patterns section
+- `readonly-skill-template.md`: Template for read-only analysis skills with tool restrictions
 
 ### Scripts
 
-- `validate-skill.py`: Python script to validate SKILL.md files
+- `validate-skill.py`: Python script to validate SKILL.md files (YAML, naming, structure)
 
 ### Documentation
 
-- `REFERENCE.md`: Comprehensive reference for skill creation, including validation rules and best practices
+- `REFERENCE.md`: Comprehensive reference for validation rules, file organization, and troubleshooting
 
 ## Usage
 
-Once installed, Claude will automatically use the skill-creator skill when you ask to create a new skill:
+Once installed, Claude will automatically use the skill-creator skill when you ask to create or edit skills:
 
+**Creating new skills:**
 ```
 I want to create a skill for analyzing log files
 ```
 
+**Editing existing skills:**
 ```
-Help me create a read-only skill for reviewing code
-```
-
-```
-Create a skill that generates API clients from OpenAPI specs
+Help me improve the database-migration skill to enforce testing rollbacks
 ```
 
-Claude will guide you through:
-1. Choosing a name (with validation)
-2. Writing a good description with triggers
-3. Selecting the location (personal, project, or plugin)
-4. Deciding on tool restrictions
-5. Creating supporting files if needed
-6. Testing your new skill
+**General skill work:**
+```
+Let's work on the commit-helper skill
+```
+
+Claude will guide you through the TDD process:
+
+**RED Phase:**
+1. Identify test scenarios
+2. Run baseline tests without the skill (or with old version)
+3. Document specific failures and rationalizations
+
+**GREEN Phase:**
+1. Gather requirements (name, location, description)
+2. Write skill content that directly addresses observed failures
+3. Add Anti-Patterns section for discipline skills
+4. Create minimal supporting files (only if 100+ lines)
+
+**REFACTOR Phase:**
+1. Test with the skill active
+2. Identify new loopholes or rationalizations
+3. Update skill to close loopholes
+4. Iterate until skill reliably prevents failures
 
 ## Validating Skills
 
@@ -108,12 +125,14 @@ Claude: I'll create a read-only skill for test coverage analysis...
 
 ## Features
 
-- **Guided Creation**: Step-by-step guidance through skill creation
-- **Validation**: Built-in validation for names, descriptions, and structure
-- **Templates**: Multiple templates for different skill types
-- **Best Practices**: Ensures skills follow Claude Code conventions
-- **Tool Restrictions**: Helps configure appropriate tool access
-- **Supporting Files**: Guides creation of scripts, templates, and documentation
+- **Test-Driven Approach**: Enforces RED-GREEN-REFACTOR cycle for skill development
+- **The Iron Law**: No skill deploys without failing baseline tests first
+- **Guided Creation & Editing**: Step-by-step for both new and existing skills
+- **Validation**: Built-in validation for names, descriptions, YAML structure
+- **Templates**: Updated templates with Anti-Patterns sections
+- **Best Practices**: Ensures skills address actual failures, not assumptions
+- **Tool Restrictions**: Configures appropriate tool access for safety
+- **Minimal Files**: Encourages self-contained skills with progressive disclosure
 
 ## What Gets Validated
 
@@ -143,22 +162,39 @@ When creating skills, the plugin validates:
 
 ## Tips for Creating Great Skills
 
-1. **Be Specific**: Include concrete trigger terms in your description
-   - Good: "Use when working with PDF files, forms, or document extraction"
-   - Poor: "Helps with documents"
+### The TDD Mindset
 
-2. **Keep Focused**: One skill = one capability
-   - Don't create a "document-processing" super-skill
-   - Create separate skills for PDFs, Word docs, spreadsheets
+1. **Always Run Baseline Tests First**
+   - Don't skip the RED phase - it's not optional
+   - Test WITHOUT the skill to see actual failures
+   - Document rationalizations you observe
 
-3. **Use Tool Restrictions**: Limit tools for safety
-   - Read-only skills: `allowed-tools: Read, Grep, Glob`
-   - Analysis skills: Add `Bash` for computation
-   - Generation skills: May need `Write` or `Edit`
+2. **Write Descriptions for Discovery**
+   - Start with "Use when..."
+   - Include error messages, tool names, symptoms
+   - Optimize for how Claude would search, not how you'd explain it
+   - Good: "Use when debugging errors, analyzing logs, or investigating failures. Mentions of stack traces, error messages, or log files trigger this."
+   - Poor: "Helps with debugging"
 
-4. **Provide Examples**: Show concrete usage in your SKILL.md
+3. **One Excellent Example > Three Mediocre Ones**
+   - Show realistic, concrete usage
+   - Demonstrate what "correct" looks like
+   - Don't pad with multiple trivial examples
 
-5. **Test Thoroughly**: Use trigger phrases to verify activation
+4. **Add Anti-Patterns for Discipline Skills**
+   - List the rationalizations you observed in testing
+   - Explain why each rationalization fails
+   - Make it explicit so Claude can't find loopholes
+
+5. **Keep Content Self-Contained**
+   - Only create supporting files for 100+ lines of reference
+   - Most skills should be entirely in SKILL.md
+   - Progressive disclosure is good, but don't overuse it
+
+6. **Use Tool Restrictions Appropriately**
+   - Read-only analysis: `allowed-tools: Read, Grep, Glob`
+   - Analysis with computation: Add `Bash`
+   - Limited write access: Add `Write` carefully
 
 ## Contributing
 
@@ -181,6 +217,14 @@ For issues or questions:
 - Claude Code Docs: https://docs.claude.com/en/docs/claude-code
 
 ## Version History
+
+- v2.0.0 (2025-11-07): TDD-focused rewrite
+  - Added Test-Driven Development approach (RED-GREEN-REFACTOR)
+  - The Iron Law: No skill without baseline tests
+  - Support for editing existing skills
+  - Updated templates with Anti-Patterns sections
+  - Emphasis on self-contained skills
+  - Improved description optimization for discovery
 
 - v1.0.0 (2025-11-07): Initial release
   - skill-creator skill

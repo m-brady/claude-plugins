@@ -1,41 +1,88 @@
 ---
 name: skill-creator
-description: Create well-structured Claude Code skills with proper YAML frontmatter, validation, and best practices. Use when the user wants to create a new skill, generate SKILL.md files, or needs help structuring a skill.
+description: Use when creating new skills, editing existing skills, or improving skill documentation. Applies Test-Driven Development to process documentation - run baseline tests without the skill first, then write minimal skill addressing failures. Mentions of skill files, SKILL.md, skill testing, or skill improvement trigger this.
 ---
 
 # Skill Creator
 
-This skill helps you create well-structured Claude Code skills with proper formatting, validation, and adherence to best practices.
+Writing skills IS Test-Driven Development applied to process documentation.
+
+Skills are reusable reference guides that teach Claude how to perform specific tasks. This skill helps you create or edit skills using a test-driven approach.
+
+## The Iron Law
+
+**No skill deploys without a failing test first.** This applies to both new skills and edits to existing skills.
+
+If you didn't watch an agent fail without the skill, you don't know if the skill teaches the right thing.
 
 ## Instructions
 
-When a user wants to create a new skill, follow these steps:
+Follow the RED-GREEN-REFACTOR cycle when creating or editing skills:
 
-### 1. Gather Requirements
+### RED: Run Baseline Tests Without the Skill
 
-Ask the user about:
+Before writing or editing ANY skill:
+
+1. **Identify test scenarios**: What specific tasks should this skill help with?
+2. **Run baseline tests**: Test Claude WITHOUT the skill (or with the old version)
+3. **Document failures**: Record exactly how Claude fails, what it misses, or what it does wrong
+4. **Capture natural behavior**: Note rationalizations, workarounds, or shortcuts Claude attempts
+
+Ask yourself:
+- What specific errors or mistakes happen without this skill?
+- What does Claude try to do instead?
+- What shortcuts does Claude rationalize?
+- What edge cases does Claude miss?
+
+**This is not optional.** If you skip baseline testing, you're guessing what to teach.
+
+### GREEN: Write Minimal Skill Addressing Failures
+
+Now write (or edit) the skill to address the specific failures you observed:
+
+#### 1. Gather Requirements
+
+For NEW skills, ask about:
 - **Skill name**: What should the skill be called?
   - Must use lowercase letters, numbers, and hyphens only
   - Maximum 64 characters
   - Example: `pdf-processor`, `commit-helper`, `code-reviewer`
-
-- **Description**: What does this skill do and when should it be used?
-  - Maximum 1024 characters
-  - Should include both WHAT it does and WHEN to use it
-  - Should mention key terms that trigger the skill
-  - Example: "Extract text and tables from PDF files, fill forms, merge documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction."
 
 - **Location**: Where should the skill be created?
   - Personal skill: `~/.claude/skills/skill-name/`
   - Project skill: `.claude/skills/skill-name/`
   - Plugin skill: `plugin-name/skills/skill-name/`
 
-- **Tool restrictions** (optional): Should this skill be restricted to specific tools?
-  - Use `allowed-tools` to limit which tools Claude can use
-  - Example: Read-only skills might use: `allowed-tools: Read, Grep, Glob`
-  - Security-sensitive workflows benefit from tool restrictions
+For EDITING existing skills:
+- What specific failures did baseline testing reveal?
+- What new scenarios need coverage?
+- What loopholes appeared during testing?
 
-### 2. Validate Inputs
+#### 2. Write the Description
+
+The description is critical for discovery. Write it to match how Claude would search:
+
+**Format**: Start with "Use when..." and include specific triggers
+
+**Optimize for search**:
+- Include concrete symptoms and error messages
+- Mention specific tools or commands
+- Use problem-focused language, not technology names
+- Include keywords users would actually say
+
+**Good example**:
+```
+Use when creating skills, editing SKILL.md files, or improving skill documentation.
+Applies Test-Driven Development to process documentation. Mentions of failing tests,
+baseline scenarios, skill validation, or skill improvement trigger this.
+```
+
+**Poor example**:
+```
+Helps with skill development and documentation.
+```
+
+#### 3. Validate Inputs
 
 Before creating the skill, validate:
 - Name uses only lowercase letters, numbers, and hyphens
@@ -44,7 +91,7 @@ Before creating the skill, validate:
 - Description includes both what the skill does AND when to use it
 - Location path is valid and accessible
 
-### 3. Create Directory Structure
+#### 4. Create Directory Structure
 
 ```bash
 # For personal skills
@@ -57,270 +104,332 @@ mkdir -p .claude/skills/skill-name
 mkdir -p plugin-name/skills/skill-name
 ```
 
-### 4. Generate SKILL.md
+#### 5. Write the SKILL.md Content
 
-Create a SKILL.md file with this structure:
-
+**YAML Frontmatter** (required):
 ```yaml
 ---
 name: skill-name
-description: Brief description of what this skill does and when to use it
+description: Use when [trigger]. [What it does]. [When to use specifics].
 # Optional: restrict tool access
-# allowed-tools: Read, Grep, Glob, Bash
+# allowed-tools: Read, Grep, Glob
 ---
+```
 
+**Content Structure** - Address the failures you observed:
+
+```markdown
 # Skill Name
 
-Brief overview of what this skill does.
+Brief statement of purpose.
 
 ## Instructions
 
-1. Step-by-step instructions for Claude
-2. Be specific and actionable
-3. Include error handling guidance
-4. Reference supporting files when needed
+Write instructions that directly counter the failures from your baseline tests:
+
+1. If Claude skipped validation → Add explicit validation step
+2. If Claude rationalized shortcuts → List those rationalizations as anti-patterns
+3. If Claude missed edge cases → Call out those edge cases explicitly
+4. If Claude used wrong approach → Show the correct approach
+
+Be specific. Reference the actual failures you saw.
 
 ## Examples
 
-Show concrete examples of using this skill:
+**One excellent example beats three mediocre ones.**
 
-\`\`\`python
-# Example code
-import example
-example.do_something()
-\`\`\`
+Show a concrete example that demonstrates the correct behavior:
+- Use realistic code/data
+- Show expected output
+- Highlight what makes this correct
 
-## Best Practices
+## Anti-Patterns (for discipline skills)
 
-- List important considerations
-- Common pitfalls to avoid
-- Performance tips
-- Security considerations
+If this skill enforces discipline, explicitly list rationalizations to reject:
+
+**Red Flags**:
+- "This is a simple case, so I'll skip..."
+- "The user didn't explicitly ask for..."
+- "I can optimize by..."
+
+**Why these fail**: [Explain the consequences]
 
 ## Requirements
 
-If the skill needs external dependencies:
+If external dependencies are needed:
 - List required packages
-- Note that they must be installed in the environment
-- Example: "Requires pypdf and pdfplumber packages"
+- Note installation requirements
+- Specify version constraints if critical
 ```
 
-### 5. Create Supporting Files (Optional)
+**Organization tip**: Keep content inline unless you have 100+ lines of reference material or reusable tools. Progressive disclosure via supporting files is good, but most skills should be self-contained.
 
-Ask if the user needs:
-- **Reference documentation**: `reference.md` for detailed API docs
-- **Additional examples**: `examples.md` for more use cases
-- **Helper scripts**: `scripts/helper.py` for utility functions
-- **Templates**: `templates/template.txt` for file templates
+#### 6. Create Supporting Files (if needed)
+
+Only create supporting files for:
+- **Heavy reference** (100+ lines): API docs, extensive tables, detailed specs
+- **Reusable tools**: Scripts that multiple skills could use
+- **Not needed**: Examples, brief guidance, troubleshooting
 
 Organize like this:
 ```
 skill-name/
-├── SKILL.md (required)
-├── reference.md (optional)
-├── examples.md (optional)
-├── scripts/
-│   └── helper.py (optional)
-└── templates/
-    └── template.txt (optional)
+├── SKILL.md (required, self-contained)
+├── reference.md (only if 100+ lines)
+└── scripts/
+    └── helper.py (only if reusable)
 ```
 
-### 6. Best Practices Checklist
+### REFACTOR: Close Loopholes Through Testing
 
-Ensure the skill follows these best practices:
-- **Focused scope**: One skill addresses one capability
-- **Clear description**: Includes what it does and when to use it
-- **Specific triggers**: Uses key terms users would mention
-- **Progressive disclosure**: Links to supporting files for details
-- **Concrete examples**: Shows real-world usage
-- **Error handling**: Guides how to handle common issues
-- **Tool restrictions**: Uses `allowed-tools` when appropriate for safety
+After writing/editing the skill, test it to find loopholes:
 
-### 7. Testing Guidance
+#### 1. Test with the Skill Active
 
-After creating the skill, provide testing instructions:
-1. Restart Claude Code to load the new skill
-2. Test with questions that match the description
-3. Verify the skill activates automatically (model-invoked)
-4. Check that supporting files load when referenced
-5. Validate tool restrictions work as expected
+Run the same scenarios from your baseline tests, but now WITH the skill:
+- Does Claude follow the instructions?
+- Does Claude still find rationalizations?
+- Are there new ways to skip steps?
+
+#### 2. Identify New Rationalizations
+
+Watch for:
+- "I can skip X because..."
+- "This scenario is different because..."
+- "The user probably meant..."
+
+These are loopholes. Add them to your Anti-Patterns section.
+
+#### 3. Test Variations
+
+Try different phrasings, contexts, and edge cases:
+- Does it work under pressure (multiple competing priorities)?
+- Does it work with ambiguous requirements?
+- Does it work when the easy path is tempting?
+
+#### 4. Iterate
+
+Update the skill to close loopholes:
+- Add explicit counters to new rationalizations
+- Strengthen language around discipline requirements
+- Add examples showing the loophole scenarios
+
+**Repeat RED-GREEN-REFACTOR until the skill reliably prevents failures.**
+
+### Skill Testing Checklist
+
+Before deploying a new or edited skill:
+
+**RED Phase**:
+- [ ] Identified 3+ realistic test scenarios
+- [ ] Ran baseline tests WITHOUT the skill
+- [ ] Documented specific failures and rationalizations
+- [ ] Captured what Claude tried to do instead
+
+**GREEN Phase**:
+- [ ] YAML frontmatter is valid (name, description)
+- [ ] Description starts with "Use when..."
+- [ ] Description includes search-optimized triggers
+- [ ] Instructions directly address observed failures
+- [ ] Included one excellent example (not multiple mediocre ones)
+- [ ] Added Anti-Patterns section (for discipline skills)
+- [ ] Content is self-contained (minimal supporting files)
+
+**REFACTOR Phase**:
+- [ ] Tested WITH the skill active
+- [ ] Identified new rationalizations or loopholes
+- [ ] Updated skill to close loopholes
+- [ ] Tested variations and edge cases
+- [ ] Skill reliably prevents the original failures
 
 ## Examples
 
-### Example 1: Simple Read-Only Skill
+### Example 1: Discipline Skill with TDD
+
+**RED Phase** - Baseline failures observed:
+- Claude analyzed logs but missed correlating errors across files
+- Claude skipped checking timestamps for patterns
+- Claude gave surface-level analysis without root cause investigation
+
+**GREEN Phase** - Skill addressing failures:
 
 ```yaml
 ---
 name: log-analyzer
-description: Analyze application logs for errors, warnings, and patterns. Use when debugging, investigating issues, or analyzing log files.
+description: Use when debugging application errors, investigating log files, or analyzing system failures. Correlates errors across multiple files, identifies patterns over time, and suggests root causes. Mentions of logs, errors, stack traces, or debugging trigger this.
 allowed-tools: Read, Grep, Glob
 ---
 
 # Log Analyzer
 
-Analyze application logs to identify errors, warnings, and patterns.
+Analyze application logs systematically to identify root causes, not just symptoms.
 
 ## Instructions
 
-1. Use Read to view log files
-2. Use Grep to search for error patterns
-3. Use Glob to find log files by pattern
-4. Summarize findings with timestamps and severity
-5. Suggest potential root causes
+1. **Find all relevant logs**: Use Glob to find log files matching the timeframe
+2. **Extract error context**: Use Grep with -C 5 to get surrounding context
+3. **Build timeline**: Sort errors chronologically across ALL files
+4. **Correlate patterns**: Look for errors that occur together
+5. **Identify root cause**: Trace back to the first error in the sequence
+6. **Summarize findings**: Include timestamps, affected components, and likely cause
 
-## Common Patterns
+## Example
 
-- Error patterns: `ERROR|FATAL|Exception`
-- Warning patterns: `WARN|WARNING`
-- Performance issues: `timeout|slow|latency`
+```bash
+# Find all logs from the last hour
+glob "**/*.log"
 
-## Best Practices
+# Search for errors with context
+grep -C 5 "ERROR|FATAL|Exception" app.log
 
-- Always include context lines around errors
-- Look for patterns over time
-- Correlate errors across multiple log files
+# Check timestamps across files
+grep "2025-11-07 14:" *.log | sort
 ```
 
-### Example 2: Skill with Scripts
+Expected output:
+```
+14:23:45 database.log: Connection timeout
+14:23:47 app.log: ERROR: Failed to fetch user data
+14:23:48 api.log: Exception: Database unavailable
+```
+
+Root cause: Database connection timeout cascaded to application and API errors.
+
+## Anti-Patterns
+
+**Red Flags**:
+- "I found an error in app.log" ← Did you check other logs?
+- "There are multiple ERROR entries" ← What's the root cause?
+- "The logs show issues" ← What's the timeline and correlation?
+
+**Why these fail**: Surface-level analysis misses the actual problem and wastes debugging time.
+```
+
+**REFACTOR Phase** - Loopholes closed:
+- Added explicit correlation requirement
+- Added timeline sorting step
+- Added Anti-Patterns section to prevent shallow analysis
+
+### Example 2: Editing an Existing Skill
+
+**Scenario**: The `database-migration` skill exists but users reported it doesn't enforce testing rollbacks.
+
+**RED Phase** - Test WITHOUT the rollback requirement:
+- Claude created migrations with up/down scripts
+- Claude skipped actually testing the rollback
+- Claude rationalized: "The down migration looks correct"
+
+**GREEN Phase** - Edit the skill to address failures:
 
 ```yaml
 ---
 name: database-migration
-description: Create and manage database migrations with proper versioning and rollback support. Use when creating database migrations, schema changes, or data migrations.
+description: Use when creating database migrations, schema changes, or rollback scripts. Enforces testing both up AND down migrations before deployment. Mentions of migrations, schema changes, or database updates trigger this.
 ---
 
 # Database Migration Helper
 
-Create safe, reversible database migrations.
+Create safe, reversible database migrations with tested rollbacks.
 
 ## Instructions
 
 1. Analyze the schema change needed
 2. Generate migration file with timestamp
-3. Include both up and down migrations
-4. Add validation checks
-5. Test rollback scenario
+3. Write BOTH up and down migrations
+4. **Test the up migration** on a test database
+5. **Test the down migration** to verify rollback works
+6. Document any data transformations or breaking changes
 
-See [migration-template.md](migration-template.md) for the standard format.
+## Example
 
-## Script Usage
+```sql
+-- Up migration
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL
+);
 
-Generate a new migration:
-\`\`\`bash
-python scripts/generate_migration.py "add_users_table"
-\`\`\`
-
-## Best Practices
-
-- Always include rollback logic
-- Test migrations on a copy of production data
-- Use transactions when possible
-- Document breaking changes
+-- Down migration
+DROP TABLE users;
 ```
 
-### Example 3: Multi-File Skill
+**Testing sequence**:
+```bash
+# Test up
+psql test_db -f migrations/001_up.sql
+# Verify schema exists
 
-```yaml
----
-name: api-client-generator
-description: Generate type-safe API clients from OpenAPI specs. Use when working with REST APIs, OpenAPI/Swagger specs, or generating API clients.
----
-
-# API Client Generator
-
-Generate type-safe API clients from OpenAPI specifications.
-
-## Quick Start
-
-\`\`\`bash
-python scripts/generate_client.py openapi.yaml --output ./client
-\`\`\`
-
-For detailed options, see [REFERENCE.md](REFERENCE.md).
-For examples, see [EXAMPLES.md](EXAMPLES.md).
-
-## Instructions
-
-1. Validate OpenAPI spec
-2. Generate client code with types
-3. Add authentication handling
-4. Generate tests
-5. Create documentation
-
-## Requirements
-
-Requires packages: openapi-generator-cli, pyyaml
+# Test down
+psql test_db -f migrations/001_down.sql
+# Verify schema is gone
 ```
 
-## Validation Rules
+## Anti-Patterns
 
-When creating skills, enforce these rules:
+**Red Flags**:
+- "The down migration looks correct" ← Did you actually test it?
+- "I'll skip testing since this is simple" ← Simple migrations can still break
+- "Testing rollback isn't needed for this change" ← It's always needed
 
-### Name Validation
-- Lowercase letters, numbers, hyphens only
-- No spaces, underscores, or special characters
+**Why these fail**: Untested rollbacks fail in production when you need them most.
+```
+
+**REFACTOR Phase**:
+- Added explicit testing steps (not just writing)
+- Added Anti-Patterns for the rationalization we observed
+- Changed description to emphasize enforcement of testing
+
+## Validation Quick Reference
+
+### Name Format
+- Lowercase letters, numbers, hyphens only: `^[a-z0-9-]+$`
 - Maximum 64 characters
-- Must be unique in the target location
+- Examples: `log-analyzer`, `pdf-processor`, `commit-helper`
 
-### Description Validation
+### Description Format
+- Start with "Use when..."
+- Include specific triggers (error messages, tool names, symptoms)
 - Maximum 1024 characters
-- Must include WHAT the skill does
-- Must include WHEN to use it
-- Should include key terms for discovery
+- Optimize for how Claude would search
 
 ### YAML Frontmatter
-- Must start with `---` on line 1
-- Must end with `---` before content
-- Required fields: `name`, `description`
-- Optional fields: `allowed-tools`
-- No tabs in YAML (use spaces)
-- Proper YAML syntax
+```yaml
+---
+name: skill-name
+description: Use when [trigger]. [What it does]. [Specifics].
+# Optional
+# allowed-tools: Read, Grep, Glob
+---
+```
 
-### File Structure
-- SKILL.md is required
-- All other files are optional
-- Use forward slashes in paths
-- Reference files with relative paths
-- Keep supporting files in subdirectories
+### Common Mistakes
 
-## Common Mistakes to Avoid
+**Skipping baseline tests** → You're guessing what to teach
+- Fix: Always run RED phase first
 
-1. **Vague descriptions**: Always be specific about when to use the skill
-   - Bad: "Helps with data"
-   - Good: "Analyze CSV files, detect outliers, generate statistics. Use when working with CSV data or spreadsheets."
+**Vague descriptions** → Skill won't activate when needed
+- Bad: "Helps with data"
+- Good: "Use when analyzing CSV files, detecting outliers, or generating statistics from spreadsheet data."
 
-2. **Invalid names**: Follow naming rules strictly
-   - Bad: `My_Skill`, `skill name`, `Skill-123`
-   - Good: `my-skill`, `skill-name`, `skill123`
+**Missing Anti-Patterns** → Claude will find rationalizations
+- Fix: Add Red Flags section listing rationalizations you observed
 
-3. **Missing triggers**: Include key terms in description
-   - Bad: "Processes files"
-   - Good: "Process PDF files, extract text, fill forms. Use when working with PDFs."
+**Too many supporting files** → Content should be self-contained
+- Fix: Keep content in SKILL.md unless you have 100+ lines of reference
 
-4. **Too broad**: Keep skills focused
-   - Bad: "All document processing"
-   - Good: Separate skills for PDFs, Word docs, spreadsheets
+## Tool Restrictions
 
-5. **Forgetting tool restrictions**: Use `allowed-tools` for safety
-   - Read-only skills should restrict to: Read, Grep, Glob
-   - Analysis skills might add: Bash (for analysis commands)
+Use `allowed-tools` to limit scope and increase safety:
 
-## Troubleshooting New Skills
+```yaml
+# Read-only analysis
+allowed-tools: Read, Grep, Glob
 
-If a newly created skill doesn't work:
+# Analysis with execution
+allowed-tools: Read, Grep, Glob, Bash
 
-1. **Restart Claude Code**: Skills load at startup
-2. **Check YAML syntax**: Validate frontmatter format
-3. **Verify file path**: Ensure SKILL.md is in correct location
-4. **Test description**: Make sure it includes trigger terms
-5. **Run with --debug**: See skill loading errors
+# Minimal write access
+allowed-tools: Read, Write, Glob
+```
 
-## Supporting Files Reference
-
-Link to supporting files in SKILL.md:
-- `[reference.md](reference.md)` - Detailed documentation
-- `[examples.md](examples.md)` - Additional examples
-- `scripts/helper.py` - Helper scripts
-- `templates/template.txt` - File templates
-
-Claude loads these files only when needed (progressive disclosure).
+For detailed reference on validation rules, file organization, and troubleshooting, see [REFERENCE.md](REFERENCE.md).

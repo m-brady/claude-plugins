@@ -1,57 +1,51 @@
 ---
 name: skill-name
-description: Brief description of what this skill does and when to use it. Include key terms that would trigger this skill.
+description: Use when [specific trigger]. [What it does]. [When to use specifics]. Mentions of [keywords], [error messages], or [tools] trigger this.
 ---
 
 # Skill Name
 
-Brief overview of what this skill does and its main purpose.
+Brief statement of purpose - what problem does this solve?
 
 ## Instructions
 
-1. First step - be specific and actionable
-2. Second step - include what tools to use
-3. Third step - handle edge cases
-4. Final step - provide clear output
+Write instructions that address the specific failures you observed in baseline testing:
 
-## Examples
+1. **First critical step** - Counter the first observed failure
+2. **Second critical step** - Address the rationalization you saw
+3. **Third critical step** - Handle the edge case that was missed
+4. **Final step** - Ensure clear, actionable output
 
-### Example 1: Basic Usage
+Be specific. Reference actual behaviors you want to change.
+
+## Example
+
+**One excellent example beats three mediocre ones.**
 
 ```bash
-# Show a concrete example
-command --option value
+# Show a realistic, concrete example
+command --with-real-options actual-file.txt
+
+# Show what happens
 ```
 
 Expected output:
 ```
-Show what the result should look like
+Show the exact result with explanation of what makes this correct
 ```
 
-### Example 2: Advanced Usage
+## Anti-Patterns
 
-```python
-# More complex example
-import library
-result = library.function()
-```
+**Red Flags** (rationalizations to reject):
+- "This is simple, so I'll skip..." ← Why this fails
+- "The user didn't explicitly ask for..." ← Why this fails
+- "I can optimize by skipping..." ← Why this fails
 
-## Best Practices
-
-- Important consideration 1
-- Common pitfall to avoid
-- Performance tip
-- Security consideration
+**Why these fail**: Explain the consequences of taking shortcuts
 
 ## Requirements
 
-If your skill needs external dependencies:
-- List required packages: `pip install package1 package2`
-- System requirements
-- Configuration needs
-
-## Troubleshooting
-
-Common issues and solutions:
-- **Problem**: Description of issue
-  - **Solution**: How to fix it
+If external dependencies are needed:
+- Required packages: `pip install package1 package2`
+- Version constraints (if critical): `package1>=2.0.0`
+- System requirements: OS, tools, configurations

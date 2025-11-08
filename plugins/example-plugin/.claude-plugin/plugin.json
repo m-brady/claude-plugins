@@ -1,8 +1,0 @@
-{
-  "name": "example-plugin",
-  "description": "An example plugin demonstrating all plugin components",
-  "version": "1.0.0",
-  "author": {
-    "name": "Your Name"
-  }
-}

@@ -134,19 +134,44 @@ After installation, Claude automatically uses this skill when you ask about sqlc
 - "How do I map a JSONB column to a Go struct?"
 - "Create a migration to add an index"
 
-### example-plugin
+### cloudflare-workers
 
-An example plugin demonstrating the structure and components of a Claude Code plugin.
+Skill for developing and deploying Cloudflare Workers with TypeScript, supporting Workers KV, Durable Objects, D1, R2, and more.
 
-**Features:**
-- Custom slash commands
-- Example agents
-- Plugin structure demonstration
+**Type:** Skill (model-invoked)
 
 **Installation:**
 ```shell
-/plugin install example-plugin@m-brady/claude-plugins
+/plugin install cloudflare-workers@m-brady/claude-plugins
 ```
+
+**Usage:**
+Claude automatically uses this when working with Cloudflare Workers, edge computing, or serverless functions.
+
+### skill-creator
+
+Create and edit Claude Code skills using Test-Driven Development principles. Enforces the RED-GREEN-REFACTOR cycle for skill development.
+
+**What it provides:**
+- Test-Driven Development approach for skills
+- "The Iron Law": No skill without baseline tests first
+- Support for both creating new skills and editing existing ones
+- Anti-Patterns sections to prevent rationalizations
+- Templates with validation and best practices
+- "One excellent example > three mediocre ones" philosophy
+
+**Type:** Skill (model-invoked)
+
+**Installation:**
+```shell
+/plugin install skill-creator@m-brady/claude-plugins
+```
+
+**Usage:**
+After installation, Claude uses this skill when you ask about creating or editing skills:
+- "Create a skill for analyzing log files"
+- "Help me improve the database-migration skill"
+- "Let's work on the commit-helper skill"
 
 ## Creating Your Own Plugins
 
@@ -170,45 +195,84 @@ your-plugin/
 └── README.md                # Documentation (recommended)
 ```
 
-### Adding a New Plugin
+### Adding a New Plugin to This Marketplace
 
-1. Create a new directory under `plugins/`:
-   ```bash
-   mkdir -p plugins/your-plugin/.claude-plugin
-   ```
+Follow these steps to add a new plugin to this marketplace:
 
-2. Create the plugin manifest:
-   ```json
-   {
-     "name": "your-plugin",
-     "description": "What your plugin does",
-     "version": "1.0.0",
-     "author": {
-       "name": "Your Name"
-     }
-   }
-   ```
+#### 1. Create Plugin Structure
 
-3. Add your components (commands, agents, etc.)
+Create a new directory under `plugins/`:
+```bash
+mkdir -p plugins/your-plugin/.claude-plugin
+```
 
-4. Update the marketplace manifest (`.claude-plugin/marketplace.json`) to include your plugin:
-   ```json
-   {
-     "plugins": [
-       {
-         "name": "your-plugin",
-         "source": "./plugins/your-plugin",
-         "description": "Your plugin description"
-       }
-     ]
-   }
-   ```
+#### 2. Create Plugin Manifest
 
-5. Test locally:
-   ```shell
-   /plugin marketplace add ./path/to/claude-plugins
-   /plugin install your-plugin@m-brady/claude-plugins
-   ```
+Create `plugins/your-plugin/.claude-plugin/plugin.json`:
+```json
+{
+  "name": "your-plugin",
+  "description": "What your plugin does",
+  "version": "1.0.0",
+  "author": {
+    "name": "Your Name"
+  }
+}
+```
+
+#### 3. Add Plugin Components
+
+Add your components (commands, agents, skills, hooks, etc.) following the structure below.
+
+#### 4. Register in Marketplace Manifest
+
+**IMPORTANT:** Update `.claude-plugin/marketplace.json` to register your plugin:
+
+```json
+{
+  "plugins": [
+    {
+      "name": "your-plugin",
+      "source": "./plugins/your-plugin",
+      "description": "Your plugin description"
+    }
+  ]
+}
+```
+
+Add your plugin entry to the `plugins` array alongside existing plugins like `sqlc-go`, `cloudflare-workers`, and `skill-creator`.
+
+#### 5. Update README
+
+Add your plugin to the "Available Plugins" section in this README with:
+- Description
+- What it provides
+- Type (Skill, Command, etc.)
+- Installation instructions
+- Usage examples
+
+#### 6. Test Locally
+
+Test your plugin before committing:
+```shell
+# Add marketplace from local path
+/plugin marketplace add /Users/michael/git/claude-plugins
+
+# Install your plugin
+/plugin install your-plugin@m-brady/claude-plugins
+
+# Test functionality
+```
+
+#### 7. Commit and Push
+
+```bash
+git add plugins/your-plugin/ .claude-plugin/marketplace.json README.md
+git commit -m "Add your-plugin to marketplace"
+git push
+```
+
+**Remember:** Every plugin MUST be registered in `.claude-plugin/marketplace.json` to be discoverable in the marketplace!
 
 ## Marketplace Structure
 
